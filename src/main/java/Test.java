@@ -39,6 +39,21 @@ public class Test {
             "下載直式 mobi 檔", "mobi"
             //"下載 epub 檔", "epub"
     );
+
+    static final Map<String, String> mapTitle = ImmutableMap.of(
+             "http://www.haodoo.net/?M=hd&P=100", "世紀百強",
+             "http://www.haodoo.net/?M=hd&P=wisdom", "隨身智囊",
+            "http://www.haodoo.net/?M=hd&P=history", "歷史煙雲",
+            "http://www.haodoo.net/?M=hd&P=martial","武俠小說",
+            "http://www.haodoo.net/?M=hd&P=mystery","懸疑小說"
+            //"下載 epub 檔", "epub"
+    );
+    static {
+        mapTitle.put("http://www.haodoo.net/?M=hd&P=scifi","奇幻小說");//
+        mapTitle.put("http://www.haodoo.net/?M=hd&P=romance","言情小說");
+        mapTitle.put("http://www.haodoo.net/?M=hd&P=fiction","小說園地");
+    }
+
             /**
              * @param args
              * @return
@@ -50,11 +65,16 @@ public class Test {
     public static void main(String[] args) {
 
 
-        String[] strings = new String[]{"http://www.haodoo.net/?M=hd&P=100", "http://www.haodoo.net/?M=hd&P=wisdom", "http://www.haodoo.net/?M=hd&P=history", "http://www.haodoo.net/?M=hd&P=martial", "http://www.haodoo.net/?M=hd&P=mystery",
-                "http://www.haodoo.net/?M=hd&P=scifi", "http://www.haodoo.net/?M=hd&P=romance", "http://www.haodoo.net/?M=hd&P=fiction"};
+        //String[] strings = new String[]{"http://www.haodoo.net/?M=hd&P=100",
+        // "http://www.haodoo.net/?M=hd&P=wisdom", "http://www.haodoo.net/?M=hd&P=history",
+        // "http://www.haodoo.net/?M=hd&P=martial", "http://www.haodoo.net/?M=hd&P=mystery",
+         //       "http://www.haodoo.net/?M=hd&P=scifi", "http://www.haodoo.net/?M=hd&P=romance", "http://www.haodoo.net/?M=hd&P=fiction"};
+        String[] strings = new String[]{"http://www.haodoo.net/?M=hd&P=100"};
+
         for (int j = 0; j < strings.length; j++) {
             try {
                 Document doc = null;
+                int finalJ = j;
                 doc = Jsoup.connect(strings[j]).get();
                 Elements s = doc.select("a[href]");
                 logger.info("爬取：" + strings[j] + "__________---------——————————————" + Thread.currentThread().getName());
@@ -74,14 +94,13 @@ public class Test {
                                     String textNameStyle = mapTextStyle.get(domElements.get(i1).getAttribute("value"));
                                     logger.info("爬取：" + elements.get(i).text() + "___" + textNameStyle + "_______---------——————————————" + Thread.currentThread().getName());
                                     HtmlPage page = domElements.get(i1).click();
-                                    TimeUnit.SECONDS.sleep(1);
+                                    TimeUnit.SECONDS.sleep(2);
                                     DomElement button = page.getElementById("okButton");
                                     if (Objects.isNull(button)) {
-                                        TimeUnit.SECONDS.sleep(1);
+                                        TimeUnit.SECONDS.sleep(2);
                                     }
                                     final InputStream inputStream = button.click().getWebResponse().getContentAsStream();
-                                    saveFile(inputStream, elements.get(i).text(), textNameStyle);
-
+                                    saveFile(inputStream, elements.get(i).text(), textNameStyle,strings[finalJ]);
                                 } catch (Exception e) {
                                     continue;
                                 }
@@ -113,7 +132,9 @@ public class Test {
     public static void saveFile(InputStream io, String... s) {
         executorService.execute(() -> {
             logger.info("-----------------------------------------------------------------------导入开始：" + s[0] + "__________---------——————————————" + Thread.currentThread().getName());
-            try (OutputStream outputStream = new FileOutputStream(new File("G:\\codedemo\\src\\main\\" + s[0]
+            File dir= new File("F:\\books\\" + s[2]);
+            try (
+                    OutputStream outputStream = new FileOutputStream(new File("F:\\books\\" + s[0]
                     .replaceAll("【", "").replaceAll("】", "")
                     .replaceAll("《", "").replaceAll("》", "") + "." + s[1]));) {
                 copyLarge(io, outputStream);

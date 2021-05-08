@@ -1,0 +1,48 @@
+<configuration scan="true" scanPeriod="60 seconds">
+    <!--<property file="${WORKING_PATH}/config/sysConfig.properties" />-->
+    <!--<property name="PROJ_NAME" value="XIR_J2EE" />-->
+    <property name="ROOT_LEVEL" value="INFO" />
+    <property name="MAX_HISTORY" value="30" />
+    <property name="MAX_FILESIZE" value="10MB" />
+    <property name="MAX_CAPACITY" value="10GB" />
+    <!--<contextName>${PROJ_NAME}</contextName>-->
+
+    <appender name="outputConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{MM-dd HH:mm:ss.SSS} %thread %-5p] %c:%L - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--<appender name="AutoTestLog" class="ch.qos.logback.core.FileAppender">-->
+        <!--<file>${WORKING_PATH}/log/autoTestLog.log</file>-->
+        <!--<append>false</append>-->
+        <!--<encoder>-->
+        <!--<pattern>[%d{MM-dd HH:mm:ss.SSS} %thread %-5p] %c:%L - %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+    <!--<appender name="AutoTestOutPutFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<file>${WORKING_PATH}/log/autoTestOutput.log</file>-->
+        <!--<append>true</append>-->
+        <!--<encoder>-->
+            <!--<pattern>[%d{MM-dd HH:mm:ss.SSS} %thread %-5p] %c:%L - %msg%n</pattern>-->
+        <!--</encoder>-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+            <!--<fileNamePattern>${WORKING_PATH}/log/autoTest.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+            <!--<maxFileSize>${MAX_FILESIZE}</maxFileSize>-->
+            <!--<maxHistory>${MAX_HISTORY}</maxHistory>-->
+            <!--<totalSizeCap>${MAX_CAPACITY}</totalSizeCap>-->
+        <!--</rollingPolicy>-->
+    <!--</appender>-->
+    <appender name ="ASYNCOutputFile" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold >0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="AutoTestOutPutFile"/>
+    </appender>
+    <!--<logger name="com.xquant.platform.app.test" level="DEBUG" additivity="true">-->
+        <!--<appender-ref ref="AutoTestLog" />-->
+    <!--</logger>-->
+
+    <root level="DEBUG">
+        <appender-ref ref="outputConsole"/>
+        <!--<appender-ref ref="ASYNCOutputFile"/>-->
+    </root>
+</configuration>
